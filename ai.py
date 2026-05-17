@@ -26,7 +26,7 @@ class Agent:
             url,
             headers=headers,
             json={"model": self.model, "messages": self.messages},
-            timeout=300,
+            timeout=600,
         )
         r.raise_for_status()
         data = r.json()
@@ -43,15 +43,3 @@ class Agent:
         self.messages.append({"role": "assistant", "content": response})
         return response
     
-
-def main() -> None:
-    agent = Agent(model="qwen3.5-0.8b")
-    console = Console()
-    
-    with console.status("[dim]Thinking...[/dim]", spinner="arc"):
-        response = agent.chat("Hello! How are you?")
-        
-    console.print(f"[blue]Assistant: [/blue] {response}")
-    
-if __name__ == '__main__':
-    main()
