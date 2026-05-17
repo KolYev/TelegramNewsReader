@@ -16,19 +16,19 @@ now = datetime.now(timezone.utc)
 time_threshold = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
 with TelegramClient(phone, api_id, api_hash) as client:
-    # Создаём файл для записи новостей за последний день
+    # Создаём файл для записи новостей за сегодняшний день
     with open("today_news.txt", "w", encoding="utf-8") as file:
         
         print("Получаем список каналов...")
         # Получаем все диалоги пользователя
         for dialog in client.get_dialogs():
-            if dialog.is_channel:
+            if dialog.is_channel and dialog.entity.broadcast:
                 print(f"Сканирую канал: {dialog.name}")
                 file.write(f"\n{'='*20} КАНАЛ: {dialog.name} {'='*20}\n\n")
                 
-                # Цикл сообщений от старых к новым
+                # Цикл сообщений от новых к старым
                 for message in client.iter_messages(dialog):
-                    # Если сообщение создано раньше чем вчера, то мы останавливаемся
+                    # Если сообщение создано раньше начала сегодняшнего дня, останавливаемся
                     if message.date < time_threshold:
                         break
                     
